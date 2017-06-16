@@ -26,6 +26,13 @@ public class DAOImplTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
+    public void findVotesTest() {
+        List<Vote> vote = dao.findVotes();
+        assertNotNull(vote);
+        assertEquals(4, vote.size());
+    }
+
+    @Test
     public void findVoteTest() {
         List<Vote> vote = dao.findVote(1L);
         assertNotNull(vote);

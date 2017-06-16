@@ -5,16 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@PropertySource("classpath:db/query.properties")
+@PropertySource("classpath:properties/query.properties")
 public class VotingApplication implements CommandLineRunner {
 
 	private JdbcTemplate template;
@@ -33,13 +30,13 @@ public class VotingApplication implements CommandLineRunner {
 		template.execute(data);
 	}
 
-	/*@Bean
-	public EmbeddedServletContainerCustomizer containerCustomizer() {
-		return container -> container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404.html"));
-	}*/
-
 	@Autowired
 	private void setTemplate(JdbcTemplate template){
 		this.template = template;
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 }

@@ -8,6 +8,8 @@ import java.util.List;
 @Component
 public interface DAO {
 
+    List<Vote> findVotes();
+
     List<Vote> findVote(long id);
 
     void agree(long id);

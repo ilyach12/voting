@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link th:href="@{http://fonts.googleapis.com/icon?family=Material+Icons}" rel="stylesheet"/>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet"
+          th:href="@{https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css}"/>
+    <title>Votes</title>
+</head>
+<body style="background-color: #f0f0f0">
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper deep-purple lighten-1">
+            <a th:href="@{/vote}" class="brand-logo center">Vote</a>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <div class="row card" style="margin-top:5%;">
+        <div class="col s12" style="margin-top: 3%; margin-bottom: 3%">
+            <form class="col s12" th:action="@{/create}" th:method="post">
+                <input class="col s3" placeholder="Essence of voting" th:name="name" th:type="text"/>
+                <button class="col s2 offset-s1 waves-effect waves-light btn deep-purple" th:type="submit">
+                    create</button>
+            </form>
+        </div>
+    </div>
+    <div class="row card" style="margin-top: 5%">
+        <div class="col s12" style="margin-top: 1.5%; margin-bottom: 1.5%">
+            <!--/*@thymesVar id="votesList" type="java.util.List"*/-->
+            <th:block th:each="v : ${votesList}">
+                <div class="col s10" style="margin-bottom: 2%">
+                    <h5 class="col s3 offset-s2 truncate" th:text="${v.title}"></h5>
+                    <a class=" col s2 offset-s1 waves-effect waves-light btn deep-purple"
+                       th:href="@{'/vote/' + ${v.id}}">Goto vote</a>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" th:src="@{https://code.jquery.com/jquery-2.1.1.min.js}"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js}"></script>
+</body>
+</html>

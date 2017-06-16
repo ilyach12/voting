@@ -8,12 +8,16 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
-@PropertySource("classpath:db/query.properties")
+@PropertySource("classpath:properties/query.properties")
 public class DAOImpl implements DAO {
 
+    @Value("${getAll}")
+    private String getAll;
     @Value("${getById}")
     private String getByIdQuery;
     @Value("${create}")
@@ -32,16 +36,23 @@ public class DAOImpl implements DAO {
         this.template = template;
     }
 
+    private Vote voteSetter(ResultSet rs, int rowNum) throws SQLException {
+        Vote vote = new Vote();
+        vote.setId(rs.getLong("id"));
+        vote.setTitle(rs.getString("title"));
+        vote.setAgreeCount(rs.getInt("agree_count"));
+        vote.setDisagreeCount(rs.getInt("disagree_count"));
+        return vote;
+    }
+
+    @Override
+    public List<Vote> findVotes() {
+        return template.query(getAll, this::voteSetter);
+    }
+
     @Override
     public List<Vote> findVote(long id) {
-        return template.query(getByIdQuery, new MapSqlParameterSource("id", id), (rs, rowNum) -> {
-            Vote vote = new Vote();
-            vote.setId(rs.getLong("id"));
-            vote.setTitle(rs.getString("title"));
-            vote.setAgreeCount(rs.getInt("agree_count"));
-            vote.setDisagreeCount(rs.getInt("disagree_count"));
-            return vote;
-        });
+        return template.query(getByIdQuery, new MapSqlParameterSource("id", id), this::voteSetter);
     }
 
     @Override
