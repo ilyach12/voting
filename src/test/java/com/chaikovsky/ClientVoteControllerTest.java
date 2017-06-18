@@ -1,6 +1,5 @@
 package com.chaikovsky;
 
-import com.chaikovsky.service.VoteService;
 import com.chaikovsky.service.VoteServiceImpl;
 import com.chaikovsky.web.ClientVoteController;
 import org.junit.Before;
@@ -19,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
@@ -46,17 +44,18 @@ public class ClientVoteControllerTest {
         restServiceServer = MockRestServiceServer.createServer(restTemplate);
 
         ReflectionTestUtils.setField(service, "serverUri", "http://localhost:8080/server");
-        ReflectionTestUtils.setField(service, "voteUri", "/{id}");
+        ReflectionTestUtils.setField(service, "votesUri", "/vote");
+        ReflectionTestUtils.setField(service, "voteUri", "/vote/{id}");
         ReflectionTestUtils.setField(service, "agreeUri", "/agree/{id}");
         ReflectionTestUtils.setField(service, "disagreeUri", "/disagree/{id}");
-        ReflectionTestUtils.setField(service, "createUri", "/create/{name}");
-        ReflectionTestUtils.setField(service, "deleteUri", "/delete/{id}");
+        ReflectionTestUtils.setField(service, "createUri", "/vote/{name}");
+        ReflectionTestUtils.setField(service, "deleteUri", "/vote/{id}");
     }
 
     @Test
     public void getVotesTest(){
         restServiceServer
-                .expect(requestTo("http://localhost:8080/server"))
+                .expect(requestTo("http://localhost:8080/server/vote"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(
                         "[{\"id\":0,\"title\":\"null\",\"agree\":0,\"disagree\":0}]",
@@ -71,7 +70,7 @@ public class ClientVoteControllerTest {
     @Test
     public void getVoteTest(){
         restServiceServer
-                .expect(requestTo("http://localhost:8080/server/1"))
+                .expect(requestTo("http://localhost:8080/server/vote/1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(
                         "[{\"id\":0,\"title\":\"null\",\"agree\":0,\"disagree\":0}]",
@@ -87,7 +86,7 @@ public class ClientVoteControllerTest {
     public void agreeTest() throws IOException {
         restServiceServer
                 .expect(requestTo("http://localhost:8080/server/agree/1"))
-                .andExpect(method(HttpMethod.POST))
+                .andExpect(method(HttpMethod.PUT))
                 .andRespond(withSuccess(
                         "[{\"id\":0,\"title\":\"null\",\"agree\":0,\"disagree\":0}]",
                         MediaType.APPLICATION_JSON));
@@ -100,7 +99,7 @@ public class ClientVoteControllerTest {
     public void disagreeTest() throws IOException {
         restServiceServer
                 .expect(requestTo("http://localhost:8080/server/disagree/1"))
-                .andExpect(method(HttpMethod.POST))
+                .andExpect(method(HttpMethod.PUT))
                 .andRespond(withSuccess(
                         "[{\"id\":0,\"title\":\"null\",\"agree\":0,\"disagree\":0}]",
                         MediaType.APPLICATION_JSON));
@@ -112,7 +111,7 @@ public class ClientVoteControllerTest {
     @Test
     public void createTest() throws IOException {
         restServiceServer
-                .expect(requestTo("http://localhost:8080/server/create/name"))
+                .expect(requestTo("http://localhost:8080/server/vote/name"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess(
                         "[{\"id\":0,\"title\":\"null\",\"agree\":0,\"disagree\":0}]",
@@ -125,8 +124,8 @@ public class ClientVoteControllerTest {
     @Test
     public void deleteTest() throws IOException {
         restServiceServer
-                .expect(requestTo("http://localhost:8080/server/delete/1"))
-                .andExpect(method(HttpMethod.POST))
+                .expect(requestTo("http://localhost:8080/server/vote/1"))
+                .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withSuccess(
                         "[{\"id\":0,\"title\":\"null\",\"agree\":0,\"disagree\":0}]",
                         MediaType.APPLICATION_JSON));

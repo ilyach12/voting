@@ -3,6 +3,7 @@ package com.chaikovsky.web;
 import com.chaikovsky.dao.DAO;
 import com.chaikovsky.model.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,34 +22,42 @@ public class ServerVoteController {
         this.dao = dao;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Vote> getVotes() {
-        return dao.findVotes();
+    @RequestMapping(value = "/vote", method = RequestMethod.GET)
+    public ResponseEntity<List<Vote>> getVotes() {
+        List<Vote> vote =  dao.findVotes();
+        return ResponseEntity.ok(vote);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public List<Vote> getVote(@PathVariable("id") long id) {
-        return dao.findVote(id);
+    @RequestMapping(value = "/vote/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<Vote>> getVote(@PathVariable("id") long id) {
+        List<Vote> vote = dao.findVote(id);
+        if (null == vote)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(vote);
     }
 
-    @RequestMapping(value = "/agree/{id}", method = RequestMethod.POST)
-    public void agree(@PathVariable("id") long id) {
+    @RequestMapping(value = "/agree/{id}", method = RequestMethod.PUT)
+    public ResponseEntity agree(@PathVariable("id") long id) {
         dao.agree(id);
+        return ResponseEntity.ok("OK");
     }
 
-    @RequestMapping(value = "/disagree/{id}", method = RequestMethod.POST)
-    public void disagree(@PathVariable("id") long id) {
+    @RequestMapping(value = "/disagree/{id}", method = RequestMethod.PUT)
+    public ResponseEntity disagree(@PathVariable("id") long id) {
         dao.disagree(id);
+        return ResponseEntity.ok("OK");
     }
 
-    @RequestMapping(value = "/create/{name}", method = RequestMethod.POST)
-    public void create(@PathVariable("name") String voteName) {
+    @RequestMapping(value = "/vote/{name}", method = RequestMethod.POST)
+    public ResponseEntity create(@PathVariable("name") String voteName) {
         dao.create(voteName);
+        return ResponseEntity.ok("OK");
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") long id) {
+    @RequestMapping(value = "/vote/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@PathVariable("id") long id) {
         dao.delete(id);
+        return ResponseEntity.ok("OK");
     }
 
 }

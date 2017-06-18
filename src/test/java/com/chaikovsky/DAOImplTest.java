@@ -72,6 +72,6 @@ public class DAOImplTest {
     public void deleteTest() {
         dao.delete(2L);
         List<Vote> vote = dao.findVote(2L);
-        assertEquals(0, vote.size());
+        assertEquals(null, vote);
     }
 }

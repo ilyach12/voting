@@ -20,6 +20,8 @@ public class VoteServiceImpl implements VoteService {
     private String serverUri;
     @Value("${voteUri}")
     private String voteUri;
+    @Value("${votesUri}")
+    private String votesUri;
     @Value("${agreeUri}")
     private String agreeUri;
     @Value("${disagreeUri}")
@@ -38,7 +40,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public List<Vote> getVotes() {
-        Vote[] vote = template.getForObject(serverUri, Vote[].class);
+        Vote[] vote = template.getForObject(serverUri + votesUri, Vote[].class);
         return Arrays.asList(vote);
     }
 
@@ -54,14 +56,14 @@ public class VoteServiceImpl implements VoteService {
     public void agree(String id) {
         Map<String, String> map = new HashMap<>(1);
         map.put("id", id);
-        template.postForLocation(serverUri + agreeUri, Vote.class, map);
+        template.put(serverUri + agreeUri, Vote.class, map);
     }
 
     @Override
     public void disagree(String id) {
         Map<String, String> map = new HashMap<>(1);
         map.put("id", id);
-        template.postForLocation(serverUri + disagreeUri, Vote.class, map);
+        template.put(serverUri + disagreeUri, Vote.class, map);
     }
 
     @Override
@@ -75,6 +77,6 @@ public class VoteServiceImpl implements VoteService {
     public void delete(String id) {
         Map<String, String> map = new HashMap<>(1);
         map.put("id", id);
-        template.postForLocation(serverUri + deleteUri, Vote.class, map);
+        template.delete(serverUri + deleteUri, map);
     }
 }

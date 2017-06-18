@@ -52,17 +52,23 @@ public class DAOImpl implements DAO {
 
     @Override
     public List<Vote> findVote(long id) {
-        return template.query(getByIdQuery, new MapSqlParameterSource("id", id), this::voteSetter);
+        List<Vote> votes = template.query(getByIdQuery,
+                new MapSqlParameterSource("id", id), this::voteSetter);
+        if (votes.isEmpty())
+            return null;
+        return votes;
     }
 
     @Override
     public void agree(long id) {
-        template.update(agreeQuery, new MapSqlParameterSource("id", id));
+        template.update(agreeQuery,
+                new MapSqlParameterSource("id", id));
     }
 
     @Override
     public void disagree(long id) {
-        template.update(disagreeQuery, new MapSqlParameterSource("id", id));
+        template.update(disagreeQuery,
+                new MapSqlParameterSource("id", id));
     }
 
     @Override
@@ -72,6 +78,7 @@ public class DAOImpl implements DAO {
 
     @Override
     public void delete(long id) {
-        template.update(deleteQuery, new MapSqlParameterSource("id", id));
+        template.update(deleteQuery,
+                new MapSqlParameterSource("id", id));
     }
 }
