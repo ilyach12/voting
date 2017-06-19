@@ -1,6 +1,6 @@
 Default port: 8080
 
-Default path for API: /server
+Default path for API: /server/vote
 
 Default path for client: /
 
